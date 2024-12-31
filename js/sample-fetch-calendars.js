@@ -16,20 +16,21 @@
      * Fetch client information (client_id and client_secret).
      */
     const fetchClientInfo = async () => {
-        const response = await fetch("https://jotform-calendar-ids.njkfmqn6rf.workers.dev/", {
-            method: "GET",
-            headers: {
-                Origin: window.location.origin,
-            },
-        });
+    const response = await fetch("https://jotform-calendar-ids.njkfmqn6rf.workers.dev/get-client-info", {
+        method: "GET",
+        headers: {
+            Origin: window.location.origin,
+        },
+    });
 
-        if (!response.ok) {
-            throw new Error("Failed to fetch client info.");
-        }
+    if (!response.ok) {
+        throw new Error("Failed to fetch client info.");
+    }
 
-        const { client_id, client_secret } = await response.json();
-        return { client_id, client_secret };
-    };
+    const { client_id, client_secret } = await response.json();
+    return { client_id, client_secret };
+};
+
 
     /**
      * Refresh the access token using a refresh token.

@@ -8,47 +8,26 @@
     }
 })(typeof window !== "undefined" ? window : this, function () {
     // Firebase imports
-    const { firestore, doc, getDoc, setDoc } = window.firebase || require("firebase/firestore");
+    const { firestore, doc, getDoc } = window.firebase || require("firebase/firestore");
 
     /**
-     * Fetch client information (client_id and client_secret).
+     * Fetches an access token using client_id and client_secret.
+     * @param {string} client_id - The client ID.
+     * @param {string} client_secret - The client secret.
      */
-    const fetchClientInfo = async () => {
-    const response = await fetch("https://jotform-calendar-ids.njkfmqn6rf.workers.dev/get-client-info", {
-        method: "GET",
-        headers: {
-            Origin: window.location.origin,
-        },
-    });
-
-    if (!response.ok) {
-        throw new Error("Failed to fetch client info.");
-    }
-
-    const { client_id, client_secret } = await response.json();
-    return { client_id, client_secret };
-};
-
-
-    /**
-     * Refresh the access token using a refresh token.
-     */
-    const refreshAccessToken = async (refreshToken) => {
-        //{ client_id, client_secret } = await fetchClientInfo();
-       
+    const fetchAccessToken = async (client_id, client_secret) => {
         const response = await fetch("https://oauth2.googleapis.com/token", {
             method: "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
             body: new URLSearchParams({
                 client_id,
                 client_secret,
-                refresh_token: refreshToken,
-                grant_type: "refresh_token",
+                grant_type: "client_credentials",
             }),
         });
 
         if (!response.ok) {
-            throw new Error("Failed to refresh access token.");
+            throw new Error("Failed to fetch access token.");
         }
 
         const data = await response.json();
@@ -59,16 +38,20 @@
     };
 
     /**
-     * Fetches calendars for the given user from Firestore.
+     * Fetches calendars for the given user from Firestore using client_id and client_secret.
      * @param {Object} user - The current user object (must include a `uid`).
+     * @param {string} client_id - The client ID.
+     * @param {string} client_secret - The client secret.
      */
-    const fetchCalendarsFromFirestore = async (user) => {
+    const fetchCalendarsFromFirestore = async (user, client_id, client_secret) => {
         if (!user || !user.uid) {
             throw new Error("Invalid user object. Please provide a valid user.");
         }
 
         try {
             console.log("Fetching calendars...");
+
+            // Fetch user document from Firestore
             const userRef = doc(firestore, "users", user.uid);
             const userDoc = await getDoc(userRef);
 
@@ -76,20 +59,14 @@
                 throw new Error("User data not found in Firestore.");
             }
 
-            const { accessToken, refreshToken, expiryTime } = userDoc.data();
+            // Get a new access token using client_id and client_secret
+            console.log("Fetching access token...");
+            const { accessToken } = await fetchAccessToken(client_id, client_secret);
 
-            let token = accessToken;
-            if (Date.now() > expiryTime) {
-                console.log("Token expired, refreshing...");
-                const refreshed = await refreshAccessToken(refreshToken);
-                token = refreshed.accessToken;
-
-                await setDoc(userRef, { accessToken: token, expiryTime: refreshed.expiryTime }, { merge: true });
-            }
-
+            // Fetch calendar list
             const response = await fetch("https://www.googleapis.com/calendar/v3/users/me/calendarList", {
                 headers: {
-                    Authorization: `Bearer ${token}`,
+                    Authorization: `Bearer ${accessToken}`,
                 },
             });
 
@@ -108,4 +85,5 @@
     // Return the main function for UMD
     return fetchCalendarsFromFirestore;
 });
+
 

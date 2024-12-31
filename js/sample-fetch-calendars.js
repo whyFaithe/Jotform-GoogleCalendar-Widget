@@ -36,7 +36,7 @@
      * Refresh the access token using a refresh token.
      */
     const refreshAccessToken = async (refreshToken) => {
-        { client_id, client_secret } = await fetchClientInfo();
+        //{ client_id, client_secret } = await fetchClientInfo();
        
         const response = await fetch("https://oauth2.googleapis.com/token", {
             method: "POST",

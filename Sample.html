@@ -32,7 +32,7 @@
 
 
     <script type="module">
-        JFCustomWidget.subscribe("ready", function(){
+    
             // Import and initialize Firebase configuration
             import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
             import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
@@ -113,7 +113,7 @@
 
             // Check authentication status on page load
             checkAuthStatus();
-         });
+
     </script>
 </body>
 </html>

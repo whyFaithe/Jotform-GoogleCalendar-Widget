@@ -7,14 +7,29 @@
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js"></script>
-    <link rel="stylesheet" type="text/css" href="style.css"/>
+    <style>
+        #auth-button{
+          padding: 5px 20px; 
+          width: 100%;
+          font-size: 16px;
+          background-color: #4285f4;
+          border-radius: 5px;
+          border: none;
+          color: white;
+          cursor: pointer;
+        }
+
+        #auth-button.connected{
+          background-color: #ff4b30;
+        }
+    </style>
 </head>
 <body>
-    <div id="auth-container">
-        <button id="auth-button">
-            Connect to Google
-        </button>
-    </div>
+
+    <button id="auth-button">
+        Connect to Google
+    </button>
+
 
     <script type="module">
         JFCustomWidget.subscribe("ready", function(){

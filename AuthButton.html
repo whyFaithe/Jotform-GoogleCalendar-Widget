@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auth Button</title>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css"/>
+</head>
+<body>
+    <div id="auth-container">
+        <button id="auth-button">
+            Connect to Google
+        </button>
+    </div>
+
+    <script type="module">
+    
+        // Import and initialize Firebase configuration
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
+        import { auth, firestore, doc, getDoc, setDoc } from "./js/firebaseConfig.js";
+        
+
+        
+        const authButton = document.getElementById("auth-button");
+        let isConnected = false;
+
+        const updateButton = () => {
+            if (isConnected) {
+                authButton.textContent = "Connected";
+                authButton.classList.add("connected");
+
+            } else {
+                authButton.textContent = "Connect to Google";
+                authButton.classList.remove("connected");
+            }
+        };
+
+        const checkAuthStatus = async () => {
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    const userRef = doc(firestore, "users", user.uid);
+                    const userDoc = await getDoc(userRef);
+
+                    if (userDoc.exists()) {
+                        const { accessToken, expiryTime } = userDoc.data();
+
+                        if (accessToken && Date.now() < expiryTime) {
+                            isConnected = true;
+                            updateButton();
+                            console.log("User is already authenticated and connected.");
+                        } else {
+                            console.log("Token expired or invalid.");
+                        }
+                    }
+                }
+            });
+        };
+
+        const handleAuth = async () => {
+            const provider = new GoogleAuthProvider();
+            provider.addScope("https://www.googleapis.com/auth/calendar");
+
+            try {
+                const result = await signInWithPopup(auth, provider);
+                const user = result.user;
+
+                const credential = GoogleAuthProvider.credentialFromResult(result);
+                const accessToken = credential.accessToken;
+                const refreshToken = credential.idToken; // Example setup
+                const expiryTime = Date.now() + 3600 * 1000; // 1-hour expiry
+
+                const userRef = doc(firestore, "users", user.uid);
+                await setDoc(userRef, {
+                    name: user.displayName,
+                    email: user.email,
+                    accessToken,
+                    refreshToken,
+                    expiryTime,
+                });
+
+                isConnected = true;
+                updateButton();
+                console.log("Authentication successful. Tokens saved to Firestore.");
+            } catch (error) {
+                console.error("Authentication error:", error);
+            }
+        };
+
+        authButton.addEventListener("click", () => {
+            if (!isConnected) {
+                handleAuth();
+            }
+        });
+
+        // Check authentication status on page load
+        checkAuthStatus();
+    </script>
+</body>
+</html>

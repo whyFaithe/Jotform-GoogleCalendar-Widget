@@ -1,11 +1,10 @@
-// fetchCalendars.js
 import { auth, firestore, doc, getDoc, setDoc } from "./firebaseConfig.js";
 
 const fetchClientInfo = async () => {
     const response = await fetch("https://jotform-calendar-ids.njkfmqn6rf.workers.dev/", {
         method: "GET",
         headers: {
-            Origin: window.location.origin, // Automatically sent by the browser
+            Origin: window.location.origin,
         },
     });
 
@@ -38,7 +37,7 @@ const refreshAccessToken = async (refreshToken) => {
     const data = await response.json();
     return {
         accessToken: data.access_token,
-        expiryTime: Date.now() + data.expires_in * 1000, // Calculate expiry time
+        expiryTime: Date.now() + data.expires_in * 1000,
     };
 };
 
@@ -79,8 +78,6 @@ const fetchCalendarsFromFirestore = async () => {
         }
 
         const calendarData = await response.json();
-        console.log(calendarData)
-        
         return calendarData.items.filter(item => item.accessRole === "owner");
     } catch (error) {
         console.error("Error fetching calendars:", error);
@@ -88,4 +85,11 @@ const fetchCalendarsFromFirestore = async () => {
     }
 };
 
+// Attach to the global window object for browser usage
+if (typeof window !== "undefined") {
+    window.fetchCalendarsFromFirestore = fetchCalendarsFromFirestore;
+}
+
+// Export for module-based environments
 export { fetchCalendarsFromFirestore };
+

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Calendar Widget</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        select {
+            padding: 8px;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4285F4;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #3367D6;
+        }
+    </style>
+</head>
+<body>
+    <div id="widget-container">
+        <!-- Content will be injected here by JavaScript -->
+    </div>
+
+    <script>
+        // Simulated widget settings
+        const widgetSettings = {
+            accessToken: "sampleAccessToken", // Replace with actual access token
+            calendarList: [
+                { id: "cal1", summary: "Work Calendar" },
+                { id: "cal2", summary: "Personal Calendar" },
+            ],
+            calendarId: null,
+        };
+
+        const widgetContainer = document.getElementById("widget-container");
+
+        if (!widgetSettings.accessToken || !widgetSettings.calendarList.length) {
+            widgetContainer.innerHTML = "<p>Please configure the widget settings.</p>";
+        } else {
+            const calendarDropdown = widgetSettings.calendarList
+                .map(
+                    (calendar) =>
+                        `<option value="${calendar.id}">${calendar.summary}</option>`
+                )
+                .join("");
+
+            widgetContainer.innerHTML = `
+                <select id="calendar-dropdown">
+                    <option value="" disabled selected>Select a calendar</option>
+                    ${calendarDropdown}
+                </select>
+                <br />
+                <button id="save-calendar">Save</button>
+            `;
+
+            document
+                .getElementById("save-calendar")
+                .addEventListener("click", () => {
+                    const selectedCalendar = document.getElementById("calendar-dropdown").value;
+
+                    if (!selectedCalendar) {
+                        alert("Please select a calendar.");
+                        return;
+                    }
+
+                    // Simulate JFCustomWidget.sendData
+                    console.log("Saving calendar with ID:", selectedCalendar);
+                    alert("Calendar saved!");
+                });
+        }
+    </script>
+</body>
+</html>

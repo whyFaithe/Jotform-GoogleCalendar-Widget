@@ -1,5 +1,3 @@
-//sample fetch calendars
-
 (function (global, factory) {
     if (typeof module === "object" && typeof module.exports === "object") {
         // Node.js or CommonJS

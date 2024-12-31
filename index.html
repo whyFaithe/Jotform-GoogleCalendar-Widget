@@ -17,31 +17,13 @@
     </div>
 
     <script type="module">
-        /*
-            <button id="fetch-cal-btn">
-                fetch calendars
-            </button>
-        */
+    
         // Import and initialize Firebase configuration
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
         import { auth, firestore, doc, getDoc, setDoc } from "./js/firebaseConfig.js";
         
 
-        // Add calendar btn functionality
-        /*
-            import { fetchCalendarsFromFirestore } from "./js/fetchCalendars.js";
-            
-            document.getElementById("fetch-cal-btn").addEventListener("click", async () => {
-                try {
-                    const calendars = await fetchCalendarsFromFirestore();
-                    console.log("Fetched calendars:", calendars);
-                } catch (error) {
-                    console.error("Error fetching calendars:", error);
-                }
-            });
-        */
-        // end btn functionality
         
         const authButton = document.getElementById("auth-button");
         let isConnected = false;

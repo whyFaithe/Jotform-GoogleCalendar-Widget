@@ -14,12 +14,14 @@
         <button id="auth-button">
             Connect to Google
         </button>
-        <button id="fetch-cal-btn">
-            fetch calendars
-        </button>
     </div>
 
     <script type="module">
+        /*
+            <button id="fetch-cal-btn">
+                fetch calendars
+            </button>
+        */
         // Import and initialize Firebase configuration
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";

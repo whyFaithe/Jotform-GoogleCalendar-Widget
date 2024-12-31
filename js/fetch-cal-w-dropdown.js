@@ -11,7 +11,7 @@
 })(typeof window !== "undefined" ? window : this, function () {
     // Firebase imports
     const { firestore, doc, getDoc, setDoc } = window.firebase || require("firebase/firestore");
-
+    console.log("start")
     /**
      * Fetch client information (client_id and client_secret).
      */
@@ -28,6 +28,7 @@
         }
 
         const { client_id, client_secret } = await response.json();
+        console.log("got client")
         return { client_id, client_secret };
     };
 
@@ -53,6 +54,7 @@
         }
 
         const data = await response.json();
+        console.log("got token")
         return {
             accessToken: data.access_token,
             expiryTime: Date.now() + data.expires_in * 1000,
@@ -65,6 +67,7 @@
      * @param {Object} user - The current user object (must include a `uid`).
      */
     const fetchCalendarsFromFirestore = async (user) => {
+        console.log("in fetch")
         if (!user || !user.uid) {
             throw new Error("Invalid user object. Please provide a valid user.");
         }
@@ -102,6 +105,7 @@
             const calendarData = await response.json();
             const calendars = calendarData.items.filter(item => item.accessRole === "owner");
 
+            console.log("afterfetch", calendarData)
             // Populate the dropdown
             const dropdown = document.getElementById("84658d9aff374e66252e6c89.calendarId");
             if (!dropdown) {

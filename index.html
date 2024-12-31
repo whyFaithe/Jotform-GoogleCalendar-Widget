@@ -29,16 +29,18 @@
         
 
         // Add calendar btn functionality
-        import { fetchCalendarsFromFirestore } from "./js/fetchCalendars.js";
-        
-        document.getElementById("fetch-cal-btn").addEventListener("click", async () => {
-            try {
-                const calendars = await fetchCalendarsFromFirestore();
-                console.log("Fetched calendars:", calendars);
-            } catch (error) {
-                console.error("Error fetching calendars:", error);
-            }
-        });
+        /*
+            import { fetchCalendarsFromFirestore } from "./js/fetchCalendars.js";
+            
+            document.getElementById("fetch-cal-btn").addEventListener("click", async () => {
+                try {
+                    const calendars = await fetchCalendarsFromFirestore();
+                    console.log("Fetched calendars:", calendars);
+                } catch (error) {
+                    console.error("Error fetching calendars:", error);
+                }
+            });
+        */
         // end btn functionality
         
         const authButton = document.getElementById("auth-button");
